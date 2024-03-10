@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -43,7 +44,7 @@ public class Product extends BaseEntity{
 	private String description;
 	
 	//khoa ngoai categories
-	@Column(name = "category_id")
 	@ManyToOne
+	@JoinColumn( name = "category_id")
 	private Category categoryId;
 }
