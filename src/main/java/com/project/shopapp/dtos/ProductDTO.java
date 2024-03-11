@@ -32,10 +32,12 @@ public class ProductDTO {
 	@Max(value = 10000000, message = "Price must be less than or equal to 10,000,000")
 	private Float price;
 	private String thumbnail;
+	
+	@JsonProperty("description")
 	private String description;
 
 	@JsonProperty("category_id")
-	private String categoryId;
+	private Long categoryId;
 	
-	private List<MultipartFile> files;
+
 }

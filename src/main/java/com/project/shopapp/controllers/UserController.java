@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 	
-	private IUserService userService;
+	private final IUserService userService;
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO,//
