@@ -1,5 +1,6 @@
 package com.project.shopapp.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -49,7 +50,7 @@ public class Order {
 	private String note;
 	
 	@Column(name = "order_date")
-	private LocalDateTime orderDate;
+	private Date orderDate;
 	
 	@Column(name = "status")
 	private String status;
@@ -64,7 +65,7 @@ public class Order {
 	private String shippingAddress;
 	
 	@Column(name = "shipping_date")
-	private Date shippingDate;
+	private LocalDate shippingDate;
 	
 	@Column(name = "tracking_number")
 	private String trackingNumber;
@@ -72,11 +73,9 @@ public class Order {
 	@Column(name = "payment_method")
 	private String paymentMethod;
 	
-	@Column(name = "payment_status")
-	private String paymentStatus;
 	
-	@Column(name = "payment_date")
-	private Date paymentDate; //khi ng dung thanh toan moi cap nhat
+//	@Column(name = "payment_date")
+//	private LocalDateTime paymentDate; //khi ng dung thanh toan moi cap nhat
 	
 	@Column(name = "active")
 	private boolean active; //thuoc ve admin

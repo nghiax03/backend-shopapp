@@ -1,5 +1,7 @@
 package com.project.shopapp.dtos;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -44,10 +46,11 @@ public class OrderDTO {
 	private Float totalMoney;
 	@JsonProperty("shipping_method")
 	private String shippingMethod;
+	@JsonProperty("shipping_date")
+	private LocalDate shippingDate;
 	@JsonProperty("shipping_address")
 	private String shippingAddress;
 	@JsonProperty("payment_method")
 	private String paymentMethod;
-	
 	
 }
