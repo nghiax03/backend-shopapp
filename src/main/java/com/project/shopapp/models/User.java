@@ -1,6 +1,13 @@
 package com.project.shopapp.models;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
@@ -20,13 +27,12 @@ import lombok.Setter;
 
 @Table(name = "users")
 @Entity
-@Data // toString
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class User {
+public class User extends BaseEntity implements UserDetails{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -58,5 +64,43 @@ public class User {
 	@ManyToOne
 	@JoinColumn(name = "role_id")
 	private com.project.shopapp.models.Role role;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+		authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName()));
+		//authorityList.add(new SimpleGrantedAuthority("ADMIN"));
+		return authorityList;
+	}
+
+	@Override
+	public String getUsername() {
+		return phoneNumber;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 	
 }

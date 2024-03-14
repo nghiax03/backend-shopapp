@@ -24,5 +24,9 @@ spring:
 api:
   prefix: api/v1
   
+jwt:
+   expiration: 2592000
+   secretKey: txAAjqYcAsDcTp/bPq0Gms1GEvaaLp3zcTUiUwRkzJY=
+  
 
         
