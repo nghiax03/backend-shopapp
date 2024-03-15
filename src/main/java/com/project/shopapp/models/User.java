@@ -69,7 +69,7 @@ public class User extends BaseEntity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
 		List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-		authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName()));
+		authorityList.add(new SimpleGrantedAuthority("ROLE_"+getRole().getName().toUpperCase()));
 		//authorityList.add(new SimpleGrantedAuthority("ADMIN"));
 		return authorityList;
 	}

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.project.shopapp.component.JwtTokenUtil;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
+import com.project.shopapp.exceptions.PermissionDenyException;
 import com.project.shopapp.models.Role;
 import com.project.shopapp.models.User;
 import com.project.shopapp.repositories.RoleRepository;
@@ -34,11 +35,16 @@ public class UserService implements IUserService {
 	private final JwtTokenUtil  jwtTokenUtil;
 
 	@Override
-	public User createUser(UserDTO userDTO) throws DataNotFoundException {
+	public User createUser(UserDTO userDTO) throws Exception {
 		//register
 		String phoneNumber = userDTO.getPhoneNumber();
 		if(userRepository.existsByPhoneNumber(phoneNumber)) {
 			throw new DataIntegrityViolationException("Phone number alredy exists");
+		}
+		Role role = roleRepository.findById(userDTO.getRoleId())
+   		     .orElseThrow(() -> new DataNotFoundException("Role not found"));
+		if(role.getName().toUpperCase().equals(role.ADMIN)) {
+			throw new PermissionDenyException("You cannot register an admin account");
 		}
 		User newUser = User.builder()
 				       .fullName(userDTO.getFullName())
@@ -50,8 +56,7 @@ public class UserService implements IUserService {
 				       .googleAccountId(userDTO.getGoogleAccountId())
 				       .build();
 		
-	     Role role = roleRepository.findById(userDTO.getRoleId())
-	    		     .orElseThrow(() -> new DataNotFoundException("Role not found"));
+	     
 	     
 	     newUser.setRole(role);
 	     
