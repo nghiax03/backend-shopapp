@@ -9,7 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.project.shopapp.component.JwtTokenUtil;
+import com.project.shopapp.component.JwtTokenUtils;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.exceptions.PermissionDenyException;
@@ -32,7 +32,7 @@ public class UserService implements IUserService {
 	
 	private final AuthenticationManager authenticationManager;
 	
-	private final JwtTokenUtil  jwtTokenUtil;
+	private final JwtTokenUtils  jwtTokenUtil;
 
 	@Override
 	public User createUser(UserDTO userDTO) throws Exception {

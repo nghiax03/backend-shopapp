@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.project.shopapp.component.JwtTokenUtil;
+import com.project.shopapp.component.JwtTokenUtils;
 import com.project.shopapp.models.User;
 
 import jakarta.servlet.FilterChain;
@@ -33,7 +33,7 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 	
 	private final UserDetailsService userDetailsService;
 	
-	private final JwtTokenUtil jwtTokenUtil;
+	private final JwtTokenUtils jwtTokenUtil;
 	
 	@Override
 	protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -41,10 +41,10 @@ public class JwtTokenFilter extends OncePerRequestFilter{
 			@NonNull FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
-			if(isBypassToken(request)) {
-				filterChain.doFilter(request, response);
-				return;
-			}
+            if(isBypassToken(request)) {
+                filterChain.doFilter(request, response); //enable bypass
+                return;
+            }
 			final String authHeader = request.getHeader("Authorization");
 			if(authHeader == null || !authHeader.startsWith("Bearer ")) {
 				response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"Anauthorize");

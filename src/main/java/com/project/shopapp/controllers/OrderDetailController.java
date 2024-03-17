@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.shopapp.component.LocalizationUtils;
 import com.project.shopapp.dtos.OrderDetailDTO;
 import com.project.shopapp.models.OrderDetail;
 import com.project.shopapp.responses.OrderDetailResponse;
 import com.project.shopapp.services.OrderDetailService;
+import com.project.shopapp.utils.MessageKeys;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("${api.prefix}/order_details")
 @RequiredArgsConstructor
 public class OrderDetailController {
-	
+    private final LocalizationUtils localizationUtils;
 	private final OrderDetailService orderDetailService;
 	
 	@PostMapping("")
@@ -75,6 +77,6 @@ public class OrderDetailController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOrderDetail(@Valid @PathVariable("id") Long id){
 		orderDetailService.deleteOrderDetailById(id);
-		return ResponseEntity.ok().body("Deleted OrderDetail with id = " + id + " successfully!");
+		return ResponseEntity.ok().body(localizationUtils.getLocalizationUtils(MessageKeys.DELETE_ORDER_DETAIL));
 	}
 }
