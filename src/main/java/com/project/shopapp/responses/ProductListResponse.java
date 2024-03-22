@@ -17,5 +17,5 @@ import lombok.Setter;
 @Builder
 public class ProductListResponse {
     private List<ProductResponse> products;
-    private int totalpage;
+    private int totalPages;
 }

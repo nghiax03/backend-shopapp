@@ -1,11 +1,5 @@
 package com.project.shopapp.dtos;
-
-import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -33,7 +27,6 @@ public class ProductDTO {
 	private Float price;
 	private String thumbnail;
 	
-	@JsonProperty("description")
 	private String description;
 
 	@JsonProperty("category_id")

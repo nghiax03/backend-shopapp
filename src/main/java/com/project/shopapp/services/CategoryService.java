@@ -1,9 +1,8 @@
 package com.project.shopapp.services;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.shopapp.dtos.CategoryDTO;
 import com.project.shopapp.models.Category;
@@ -19,6 +18,7 @@ public class CategoryService implements ICategoryService {
 	private final CategoryRepostitory categoryRepostitory;
 
 	@Override
+	@Transactional
 	public Category createCategory(CategoryDTO categoryDTO) {
 		Category newCategory = Category.builder()
 				.name(categoryDTO.getName()).build();
@@ -38,6 +38,7 @@ public class CategoryService implements ICategoryService {
 	}
 
 	@Override
+	@Transactional
 	public Category updateCategory(Long categoryId, CategoryDTO categoryDTO) {
 		// TODO Auto-generated method stub
 		Category existingCategory = getCategoryById(categoryId);
@@ -47,11 +48,11 @@ public class CategoryService implements ICategoryService {
 	}
 
 	@Override
+	@Transactional
 	public void deleteCategory(Long id) {
 		// TODO Auto-generated method stub
 		// xoa cung
 		categoryRepostitory.deleteById(id);
-
 	}
 
 }
