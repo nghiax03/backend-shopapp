@@ -31,7 +31,7 @@ public class OrderController {
     private final LocalizationUtils localizationUtils;
 	private final OrderService orderService;
 	@PostMapping("")
-	public ResponseEntity<?> orderCreader(@RequestBody @Valid OrderDTO orderDTO,//
+	public ResponseEntity<?> createOrder(@RequestBody @Valid OrderDTO orderDTO,//
 			BindingResult result) {
 		try {
 			if(result.hasErrors()) {
