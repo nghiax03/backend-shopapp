@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.shopapp.component.LocalizationUtils;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.responses.OrderResponse;
 import com.project.shopapp.services.OrderService;
 import com.project.shopapp.utils.MessageKeys;
 
@@ -39,8 +40,8 @@ public class OrderController {
 						.map(FieldError::getDefaultMessage).toList();
 				return ResponseEntity.badRequest().body(errorMessage);
 			}
-			Order newOrder = orderService.createOrder(orderDTO);
-			return ResponseEntity.ok(newOrder);
+			Order orderResponse = orderService.createOrder(orderDTO);
+			return ResponseEntity.ok(orderResponse);
 		} catch (Exception e) {
 			// TODO: handle exception
 			return ResponseEntity.badRequest().body(e.getMessage());

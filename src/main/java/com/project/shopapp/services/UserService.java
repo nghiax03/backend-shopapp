@@ -54,10 +54,8 @@ public class UserService implements IUserService {
 				       .dateOfBirth(userDTO.getDataOfBirth())
 				       .facebookAccountId(userDTO.getFacebookAccountId())
 				       .googleAccountId(userDTO.getGoogleAccountId())
-				       .build();
-		
-	     
-	     
+				       .active(true)
+				       .build();     
 	     newUser.setRole(role);
 	     
 	     if(userDTO.getFacebookAccountId() == 0 && userDTO.getGoogleAccountId() ==0) {
@@ -71,7 +69,7 @@ public class UserService implements IUserService {
 	}
 
 	@Override
-	public String login(String numberPhone, String password) throws Exception{
+	public String login(String numberPhone, String password, Long roleId) throws Exception{
 		Optional<com.project.shopapp.models.User> optionalUser = userRepository.findByPhoneNumber(numberPhone);
 		if(optionalUser.isEmpty()) {
 			throw new DataNotFoundException("Invalid phonenumber / password");
@@ -84,10 +82,33 @@ public class UserService implements IUserService {
 	    		 throw new BadCredentialsException("Wrong Phone Number or Password");
 	    	 }
 	     }
+		Optional<Role> optionalRole = roleRepository.findById(roleId);
+		if(optionalRole.isEmpty() || !roleId.equals(existingUser.getRole().getId())) {
+			throw new DataNotFoundException("Role does not exists");
+		}
+		if(!optionalUser.get().isActive()) {
+			throw new DataNotFoundException("User is locked");
+		}
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 				numberPhone, password, existingUser.getAuthorities());
 		//authenticate with java spring
 		authenticationManager.authenticate(authenticationToken);
 		return jwtTokenUtil.generateToken(optionalUser.get());
+	}
+
+	@Override
+	public User getUserDetailsFromToken(String token) throws Exception {
+		if(jwtTokenUtil.isTokenExpired(token)) {
+			throw new Exception("Token is expired");
+		}
+		String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+		Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+		
+		if(user.isPresent()) {
+			return user.get();
+		}
+		else {
+			throw new Exception("User not found");
+		}
 	}
 }

@@ -34,6 +34,7 @@ public class JwtTokenUtils {
 		Map<String, Object> claims = new HashMap<>();
 		//this.generateSecrectKey();
 		claims.put("phoneNumber", user.getPhoneNumber());
+		claims.put("userId", user.getId());
 		try {
 			String token = Jwts.builder().setClaims(claims).setSubject(user.getPhoneNumber())
 					.setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.project.shopapp.dtos.CartItemDTO;
 import com.project.shopapp.dtos.OrderDTO;
@@ -40,6 +41,7 @@ public class OrderService implements IOrderService {
 	private final OrderDetailRepository orderDetailRepository;
 	
 	@Override
+	@Transactional
 	public Order createOrder(OrderDTO orderDTO) throws Exception {
 		//tim xem userId co ton tai khong
 	    User user = userRepository.findById(orderDTO.getUserId())
@@ -53,7 +55,7 @@ public class OrderService implements IOrderService {
 	    Order order = new Order();
 	    modelMapper.map(orderDTO, order);
 	    order.setUser(user);
-	    order.setOrderDate(new Date());
+	    order.setOrderDate(LocalDate.now());
 	    order.setStatus(OrderStatus.PENDING);
 	    //shipping >= ngay hom qua
 	    LocalDate shippingDate = orderDTO.getShippingDate()
@@ -96,6 +98,7 @@ public class OrderService implements IOrderService {
 		return order;
 	}
 
+	@Transactional
 	@Override
 	public Order updateOrder(Long id, OrderDTO orderDTO) throws Exception{
 		Order order = orderRepository.findById(id)
@@ -113,6 +116,7 @@ public class OrderService implements IOrderService {
 		return orderRepository.save(order);
 	}
 
+	@Transactional
 	@Override
 	public void deleteOrder(Long id) {
 		Order order = orderRepository.findById(id).orElse(null);
