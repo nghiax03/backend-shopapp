@@ -6,10 +6,13 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +21,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.project.shopapp.component.LocalizationUtils;
+import com.project.shopapp.dtos.UpdateUserDTO;
 import com.project.shopapp.dtos.UserDTO;
 import com.project.shopapp.dtos.UserLoginDTO;
 import com.project.shopapp.models.User;
@@ -89,14 +93,35 @@ public class UserController {
 	}
 	
 	@PostMapping("/details")
-	public ResponseEntity<UserResponse> getUserDetails(@RequestHeader("Authorization") String token){
+	public ResponseEntity<UserResponse> getUserDetails(
+			@RequestHeader("Authorization") String authorizationHeader){
 			try {
-				String extractedToken = token.substring(7); //Loai bo Bearer
+				String extractedToken = authorizationHeader.substring(7); //Loai bo Bearer
 				User user = userService.getUserDetailsFromToken(extractedToken);
 				return ResponseEntity.ok(UserResponse.formUser(user));
 			} catch (Exception e) {
 				return ResponseEntity.badRequest().build();
 				// TODO: handle exception
 			}
+	}
+	
+	@PutMapping("/details/{userId}")
+	public ResponseEntity<UserResponse> updateUserDetails(
+			@PathVariable Long userId,
+			@RequestBody UpdateUserDTO updatedUserDTO,
+			@RequestHeader("Authorization") String authorizationHeader){
+		try {
+			String extractedToken = authorizationHeader.substring(7);
+	        User user = userService.getUserDetailsFromToken(extractedToken);
+	        if(user.getId() != userId) {
+	        	return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+	        }
+	        User updatedUser = userService.updateUser(userId, updatedUserDTO);
+	        return ResponseEntity.ok(UserResponse.formUser(updatedUser));
+			
+		} catch (Exception e) {
+			return ResponseEntity.badRequest().build();
+			// TODO: handle exception
+		}
 	}
 }
