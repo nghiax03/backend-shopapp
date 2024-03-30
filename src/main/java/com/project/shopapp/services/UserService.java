@@ -88,7 +88,7 @@ public class UserService implements IUserService {
 		if(optionalRole.isEmpty() || !roleId.equals(existingUser.getRole().getId())) {
 			throw new DataNotFoundException("Role does not exists");
 		}
-		if(!optionalUser.get().isActive()) {
+		if(!existingUser.getRole().getName().equalsIgnoreCase("ADMIN") && !existingUser.isActive()) {
 			throw new DataNotFoundException("User is locked");
 		}
 		UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -147,6 +147,9 @@ public class UserService implements IUserService {
 		
 		if(updatedUserDTO.getPassword() != null &&
 				!updatedUserDTO.getPassword().isEmpty()) {
+			if(!updatedUserDTO.getPassword().equals(updatedUserDTO.getRetypePassword())) {
+				throw new DataNotFoundException("Password and retype not the same");
+			}
 			String newPassword = updatedUserDTO.getPassword();
 			String encodedPassword = passwordEncoder.encode(newPassword);
 			existingUser.setPassword(encodedPassword);

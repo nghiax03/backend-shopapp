@@ -2,7 +2,11 @@ package com.project.shopapp.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,12 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.project.shopapp.component.LocalizationUtils;
 import com.project.shopapp.dtos.OrderDTO;
 import com.project.shopapp.models.Order;
+import com.project.shopapp.responses.OrderListResponse;
 import com.project.shopapp.responses.OrderResponse;
 import com.project.shopapp.services.OrderService;
 import com.project.shopapp.utils.MessageKeys;
@@ -89,5 +93,23 @@ public class OrderController {
 	public ResponseEntity<String> deleteOrder(@Valid @PathVariable Long id){
 		orderService.deleteOrder(id);
 		return ResponseEntity.ok(localizationUtils.getLocalizationUtils(MessageKeys.DELETE_ORDER));
+	}
+	
+	@GetMapping("/get-orders-by-keyword")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	public ResponseEntity<OrderListResponse> getOrdersByKeyWord(
+			@RequestParam(defaultValue = "", required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit){
+		PageRequest pageRequest = PageRequest.of(page, limit,
+				Sort.by("id").ascending());
+		Page<OrderResponse> orderPage = orderService.getOrdersByKeyword(keyword, pageRequest)
+				.map(OrderResponse::formOrder);
+		int totalPages = orderPage.getTotalPages();
+		List<OrderResponse> orderResponses = orderPage.getContent();
+		return ResponseEntity.ok(OrderListResponse.builder()
+				.orders(orderResponses)
+				.totalPages(totalPages)
+				.build());
 	}
 }

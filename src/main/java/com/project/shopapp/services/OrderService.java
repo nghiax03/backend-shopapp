@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -131,6 +133,12 @@ public class OrderService implements IOrderService {
 	@Override
 	public List<Order> findByUserId(Long userId) {
 		return orderRepository.findByUserId(userId);
+	}
+
+	@Override
+	public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
+		// TODO Auto-generated method stub
+		return orderRepository.findByKeyword(keyword, pageable);
 	}
 
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableWebSecurity
 @EnableWebMvc
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class WebSecurityConfig {
 	
@@ -63,6 +65,7 @@ public class WebSecurityConfig {
 	                .requestMatchers("GET",String.format("%s/orders/**", apiPrefix)).permitAll()
 	                .requestMatchers("POST",String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
 	                .requestMatchers("PUT",String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
+//	                .requestMatchers("GET",String.format("%s/orders/get-orders-by-keyword",apiPrefix)).hasRole(Role.ADMIN)
 	                .requestMatchers("DELETE",String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
 	                
 	                //order-details
