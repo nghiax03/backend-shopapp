@@ -1,8 +1,4 @@
 package com.project.shopapp.models;
-
-import java.time.LocalDateTime;
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -15,7 +11,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -41,7 +36,7 @@ public class OrderDetail {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
-	@Column(name = "price")
+	@Column(name = "price", nullable = false)
 	private Float price;
 
 	@Column(name = "number_of_products", nullable = false)

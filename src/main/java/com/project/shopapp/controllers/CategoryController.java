@@ -2,6 +2,7 @@ package com.project.shopapp.controllers;
 
 import java.util.List;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.LocaleResolver;
 
 import com.project.shopapp.component.LocalizationUtils;
 import com.project.shopapp.dtos.CategoryDTO;
@@ -36,17 +38,21 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
     private final LocalizationUtils localizationUtils;
+    private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
 
 	@PostMapping("")
 	// neu tham so truyen vao 1 doi tuong => request object (Data transfer object)
-	public ResponseEntity<?> createCategory(@Valid @RequestBody CategoryDTO categoryDTO, //
+	public ResponseEntity<CategoryResponse> createCategory(
+			@Valid @RequestBody CategoryDTO categoryDTO, //
 			BindingResult result) {
 		CategoryResponse categoryResponse = new CategoryResponse();
 		if (result.hasErrors()) {
 			// danh sach error
-			List<String> errorMessage = result.getFieldErrors().stream().map(FieldError::getDefaultMessage).toList();
+			List<String> errorMessage = result.getFieldErrors()
+					.stream().map(FieldError::getDefaultMessage).toList();
 			categoryResponse.setMessage(localizationUtils
-					.getLocalizationUtils(MessageKeys.CREATE_CATEGORY_FAILED));
+					.getLocalizedMessage(MessageKeys.INSERT_CATEGORY_FAILED));
 			categoryResponse.setErrors(errorMessage);
 			return ResponseEntity.badRequest().body(categoryResponse);
 		}
@@ -70,14 +76,15 @@ public class CategoryController {
 		UpdateCategoryResponse upCategoryResponse = new UpdateCategoryResponse();
 		categoryService.updateCategory(id,categoryDTO);
 		upCategoryResponse.setMessage(localizationUtils
-				.getLocalizationUtils(MessageKeys.UPDATE_CATEGORY_SUCCESSFULLY));
+				.getLocalizedMessage(MessageKeys.UPDATE_CATEGORY_SUCCESSFULLY));
 		return ResponseEntity.ok(upCategoryResponse);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
 		categoryService.deleteCategory(id);
-		return ResponseEntity.ok(localizationUtils.getLocalizationUtils(MessageKeys.DELETE_CATEGORY_SUCCESSFULLY));
+		return 
+		ResponseEntity.ok(localizationUtils.getLocalizedMessage(MessageKeys.DELETE_CATEGORY_SUCCESSFULLY));
 	}
 
 }

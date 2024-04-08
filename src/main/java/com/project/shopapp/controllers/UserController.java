@@ -55,10 +55,10 @@ public class UserController {
 			}
 			if(!userDTO.getPassword().equals(userDTO.getRetypePassword())){
 				registerResponse.setMessage(localizationUtils
-						.getLocalizationUtils(MessageKeys.PASSWORD_NOT_MATCH));
+						.getLocalizedMessage(MessageKeys.PASSWORD_NOT_MATCH));
 			}
 			User user =  userService.createUser(userDTO);
-			registerResponse.setMessage(localizationUtils.getLocalizationUtils(MessageKeys.REGISTER_SUCCESSFULLY));
+			registerResponse.setMessage(localizationUtils.getLocalizedMessage(MessageKeys.REGISTER_SUCCESSFULLY));
 			registerResponse.setUser(user);
 			return ResponseEntity.ok(registerResponse);
 		} catch (Exception e) {
@@ -80,13 +80,13 @@ public class UserController {
 						userLoginDTO.getRoleId() == null ? 1 : userLoginDTO.getRoleId());
 			
 			return ResponseEntity.ok(LoginResponse.builder()
-					.message(localizationUtils.getLocalizationUtils(MessageKeys
+					.message(localizationUtils.getLocalizedMessage(MessageKeys
 							.LOGIN_SUCCESSFULLY))
 					.token(token)
 					.build());
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body(LoginResponse.builder()
-					.message(localizationUtils.getLocalizationUtils(MessageKeys.LOGIN_FAILED,
+					.message(localizationUtils.getLocalizedMessage(MessageKeys.LOGIN_FAILED,
 							e.getMessage()))
 					.build());
 		}

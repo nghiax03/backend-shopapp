@@ -20,15 +20,18 @@ public class CategoryService implements ICategoryService {
 	@Override
 	@Transactional
 	public Category createCategory(CategoryDTO categoryDTO) {
-		Category newCategory = Category.builder()
-				.name(categoryDTO.getName()).build();
+		Category newCategory = Category
+				.builder()
+				.name(categoryDTO.getName())
+				.build();
 		return categoryRepostitory.save(newCategory);
 	}
 
 	@Override
-	public Category getCategoryById(Long id) {
+	public Category getCategoryById(long id) {
 		// TODO Auto-generated method stub
-		return categoryRepostitory.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+		return categoryRepostitory
+				.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
 	}
 
 	@Override
@@ -39,7 +42,7 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	@Transactional
-	public Category updateCategory(Long categoryId, CategoryDTO categoryDTO) {
+	public Category updateCategory(long categoryId, CategoryDTO categoryDTO) {
 		// TODO Auto-generated method stub
 		Category existingCategory = getCategoryById(categoryId);
 		existingCategory.setName(categoryDTO.getName());
@@ -49,7 +52,7 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	@Transactional
-	public void deleteCategory(Long id) {
+	public void deleteCategory(long id) {
 		// TODO Auto-generated method stub
 		// xoa cung
 		categoryRepostitory.deleteById(id);
