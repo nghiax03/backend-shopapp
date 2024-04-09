@@ -1,5 +1,6 @@
 package com.project.shopapp.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
 import com.project.shopapp.component.LocalizationUtils;
 import com.project.shopapp.dtos.*;
@@ -7,6 +8,7 @@ import com.project.shopapp.models.Product;
 import com.project.shopapp.models.ProductImage;
 import com.project.shopapp.responses.ProductListResponse;
 import com.project.shopapp.responses.ProductResponse;
+import com.project.shopapp.services.IProductRedisService;
 import com.project.shopapp.services.IProductService;
 import com.project.shopapp.utils.MessageKeys;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     private final IProductService productService;
     private final LocalizationUtils localizationUtils;
+    private final IProductRedisService productRedisService;
 
     @PostMapping("")
     //POST http://localhost:8088/v1/api/products
@@ -156,7 +159,8 @@ public class ProductController {
             @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
-    ) {
+    ) throws JsonProcessingException {
+    	int totalPages = 0;
         // Tạo Pageable từ thông tin trang và giới hạn
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
@@ -165,15 +169,21 @@ public class ProductController {
         );
         logger.info(String.format("keyword = %s, category_id = %d, page = %d, limit = %d",
                 keyword, categoryId, page, limit));
-        Page<ProductResponse> productPage = productService.getAllProducts(keyword, categoryId, pageRequest);
-        // Lấy tổng số trang
-        int totalPages = productPage.getTotalPages();
-        List<ProductResponse> products = productPage.getContent();
+        List<ProductResponse> productResponses = productRedisService
+        		.getAllProducts(keyword, categoryId, pageRequest);
+        if(productResponses == null) {
+        	Page<ProductResponse> productPage = productService
+        			.getAllProducts(keyword, categoryId, pageRequest);
+        	totalPages = productPage.getTotalPages();
+        	productResponses = productPage.getContent();
+        	productRedisService
+        	.saveAllProducts(productResponses, keyword, categoryId, pageRequest);
+        }
         return ResponseEntity.ok(ProductListResponse
-                        .builder()
-                        .products(products)
-                        .totalPages(totalPages)
-                        .build());
+        		.builder()
+        		.products(productResponses)
+        		.totalPages(totalPages)
+        		.build());
     }
     //http://localhost:8088/api/v1/products/6
     @GetMapping("/{id}")
